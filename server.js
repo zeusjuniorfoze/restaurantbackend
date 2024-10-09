@@ -26,10 +26,7 @@ server.use(cors({
 
 
 //configurer les route
-server.get('/', function(req, res){
-    res.setHeader('Content-Type','text/html')
-    res.status(200).send('<h1>bIENVENU</h1>')
-})
+
 
 
 server.use('/api/', userRouter)

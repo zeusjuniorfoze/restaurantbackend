@@ -112,6 +112,8 @@ module.exports = {
         } */
 
         const menuId = req.params.id;
+        // Récupérer l'URL de l'image depuis Cloudinary
+        const imageUrl = req.file ? req.file.path : null;
         const { nomplat, descripplat, prixplat } = req.body;
 
         try {
@@ -122,7 +124,7 @@ module.exports = {
             menus.platinfo.push({
                 nomplat,
                 descripplat,
-                imageplat: req.file.filename,
+                imageplat: imageUrl,
                 prixplat
             });
             const updatedMenu = await menus.save();

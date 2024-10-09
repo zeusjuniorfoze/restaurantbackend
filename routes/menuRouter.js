@@ -3,17 +3,15 @@ let express = require('express')
 const multer = require('multer')
 const path = require('path')
 const menuCrtls = require('../controllers/menusCrtls')
+const upload = require('../config/multer')
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '../public/images'), function(error,success){
             if(error) {
                 console.log('Erreur lors de la création du répertoire : ', error)
                 cb(error, null)
-            } else {
-                console.log('Répertoire créé avec succès')
-                cb(null, path.join(__dirname, '../public/images'))
             }
         })
     }, 
@@ -32,7 +30,7 @@ const storage = multer.diskStorage({
 
 });
 
-const upload = multer({storage:storage});
+const upload = multer({storage:storage}); */
 
 // Routes
 exports.router = (function(){
