@@ -7,5 +7,5 @@ mongoose.connect(process.env.MONGO_URL)
 .catch(err => console.log(err))
 
 mongoose.connection.on('error', err => {
-    console.log(err)
+    console.log('connected failer')
 })
