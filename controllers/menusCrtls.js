@@ -31,18 +31,17 @@ module.exports = {
     //Fonction pour la creation d'un titre de menu
     createMenu : async(req, res) => {
 
-        // Récupérer le token de l'en-tête d'autorisation
+        /* // Récupérer le token de l'en-tête d'autorisation
         const headerAuth = req.headers['authorization'];
         const idUser = jwtutils.getUserId(headerAuth); 
 
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
-        }
+        } */
         const { typeplat} = req.body;
         try {
             const menus = new menu({
-                typeplat : typeplat,
-                idUser : idUser
+                typeplat : typeplat
             });
             const menuDate = await menus.save();
             res.status(200).json({successs: true,msg: "Menu envoyer", Data: menuDate});

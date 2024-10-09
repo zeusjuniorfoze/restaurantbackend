@@ -27,10 +27,6 @@ const menuschema = mongoose.Schema({
         type:String,
         require:true
     },
-    idUser: {
-        type:String,
-        require:true
-    },
     platinfo: [platschema],
     createdAt: {
         type: Date,
