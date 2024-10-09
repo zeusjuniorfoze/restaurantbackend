@@ -4,8 +4,8 @@ let jwtutils = require('../utils/jwt.utils')
 module.exports = {
     //Fonction pour recuperer le menu
     getMenus : async(req, res) => {
-        const headerAuth = req.headers['authorization'];
-        const idUser = jwtutils.getUserId(headerAuth); 
+        /* const headerAuth = req.headers['authorization'];
+        const idUser = jwtutils.getUserId(headerAuth);  */
     
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
@@ -31,8 +31,8 @@ module.exports = {
     //Fonction pour la creation d'un titre de menu
     createMenu : async(req, res) => {
 
-        /* // Récupérer le token de l'en-tête d'autorisation
-        const headerAuth = req.headers['authorization'];
+        // Récupérer le token de l'en-tête d'autorisation
+        /* const headerAuth = req.headers['authorization'];
         const idUser = jwtutils.getUserId(headerAuth); 
 
         if (idUser < 0) {
