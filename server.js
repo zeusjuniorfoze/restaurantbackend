@@ -12,6 +12,7 @@ let reservationRouter = require('./routes/reservationRouter').router
 //instantiate server
 let server = express()
 
+
 //body parser configuration
 server.use(bodyParser.urlencoded({ extended: true}))
 server.use(bodyParser.json())
