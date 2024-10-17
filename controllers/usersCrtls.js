@@ -58,13 +58,14 @@ module.exports ={
     login : async (req, res) => {
 
         let {emailUser,passwordUser} = req.body;
-
+        console.log(emailUser)
+        console.log(passwordUser)
         if( emailUser == '' || passwordUser == '' ){
             return res.status(400).json({'error': 'erreur de paramettre'})
         }
 
         try {
-            // Vérifier si l'email existe déjà dans la base de données
+
             const existingUser = await user.findOne({ emailUser: emailUser });
             if (!existingUser) {
                 return res.status(400).json({ 'error': 'Email non trouve' });
@@ -73,6 +74,8 @@ module.exports ={
             bcrypt.compare(passwordUser, existingUser.passwordUser, function(errBycrypt, resBycrypt){
                 if(resBycrypt){
                     return res.status(200).json({
+                        success: true,
+                        'role' : "admin",
                         'id': existingUser.id,
                         'token': jwtutils.generateTokenForUser(existingUser)
                     })
@@ -82,7 +85,7 @@ module.exports ={
             })
   
         } catch (error) {
-            res.status(500).json({ message: "Erreur lors de la connexion", error }); 
+            res.status(500).json({ message: "Erreur lors de la connexion veillez ressayer"}); 
         }
 
        
