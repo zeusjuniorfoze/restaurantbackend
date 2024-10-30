@@ -14,6 +14,10 @@ const platschema = mongoose.Schema({
         type: String,
         require: true
     },
+    imagePublicId:{
+        type: String,
+        require: false
+    },
     prixplat: {
         type:String,
         require: true

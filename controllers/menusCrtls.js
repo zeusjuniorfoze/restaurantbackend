@@ -32,13 +32,14 @@ module.exports = {
     createMenu : async(req, res) => {
 
         // Récupérer le token de l'en-tête d'autorisation
-        /* const headerAuth = req.headers['authorization'];
+        const headerAuth = req.headers['authorization'];
         const idUser = jwtutils.getUserId(headerAuth); 
 
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
-        } */
+        }
         const { typeplat} = req.body;
+        
         try {
             const menus = new menu({
                 typeplat : typeplat
@@ -105,11 +106,11 @@ module.exports = {
     ajoutPlat : async(req, res) => {
 
         // Récupérer le token de l'en-tête d'autorisation
-        /* const headerAuth = req.headers['authorization']; 
+        const headerAuth = req.headers['authorization']; 
         const idUser = jwtutils.getUserId(headerAuth); 
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
-        } */
+        }
 
         const menuId = req.params.id;
         // Récupérer l'URL de l'image depuis Cloudinary
@@ -125,6 +126,7 @@ module.exports = {
                 nomplat,
                 descripplat,
                 imageplat: imageUrl,
+                imagePublicId: req.file.filename,
                 prixplat
             });
             const updatedMenu = await menus.save();
@@ -136,18 +138,21 @@ module.exports = {
     },
 
     //Fonction pour modifier un plat
-    modifierPlat : async(req, res) =>{
-
+    modifierPlat: async (req, res) => {
+        
         // Récupérer le token de l'en-tête d'autorisation
-        const headerAuth = req.headers['authorization']; 
-        const idUser = jwtutils.getUserId(headerAuth); 
+        const headerAuth = req.headers['authorization'];
+        const idUser = jwtutils.getUserId(headerAuth);
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
         }
-
-        const menuId = req.params.menuId;  
-        const platId = req.params.platId;  
-        const { nomplat, descripplat, prixplat } = req.body;  
+    
+        const menuId = req.params.menuId;
+        
+        const platId = req.params.platId;
+      
+        const { nomplat, descripplat, prixplat } = req.body;
+    
         try {
             const menus = await menu.findById(menuId);
             if (!menus) {
@@ -157,17 +162,22 @@ module.exports = {
             if (!plat) {
                 return res.status(404).json({ message: 'Plat non trouvé' });
             }
+    
             // Mettre à jour les champs du plat
             plat.nomplat = nomplat || plat.nomplat;
             plat.descripplat = descripplat || plat.descripplat;
             plat.prixplat = prixplat || plat.prixplat;
-
+    
+            // Si une image est envoyée, mettre à jour le champ imageplat
+            if (req.file) {
+                plat.imageplat = req.file.path; // Assurez-vous de stocker le bon chemin de l'image
+            }
+    
             const updatedMenu = await menus.save();
             res.status(200).json(updatedMenu);
         } catch (error) {
             res.status(500).json({ message: 'Erreur lors de la mise à jour du plat', error });
         }
-
     },
 
     //Fonction pour modifier un plat
@@ -190,8 +200,19 @@ module.exports = {
                 return res.status(404).json({ message: 'Menu non trouvé' });
             }
 
-            menus.platinfo.pull({ nomplat: nomplat });
+            // Supprimer l'image de Cloudinary
+            const plat = menus.platinfo.find(plat => plat.nomplat === nomplat);
+            if (!plat) {
+                return res.status(404).json({ message: 'Plat non trouvé' });
+            }
 
+            // Supprimer l'image de Cloudinary
+            if (plat.imagePublicId) {
+                await cloudinary.uploader.destroy(plat.imagePublicId);
+            }
+
+            // Retirer le plat du menu
+            menus.platinfo.pull({ nomplat: nomplat });
             await menus.save();
 
             res.status(200).json({ message: 'Plat supprimé avec succès', menus });

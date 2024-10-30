@@ -45,7 +45,7 @@ exports.router = (function(){
 
     //Route pour les plats
     menuRouter.put('/plat-ajouter/:id', upload.single('imageplat') ,menuCrtls.ajoutPlat);
-    menuRouter.put('/plat-update/:menuId/:platId', menuCrtls.modifierPlat);
+    menuRouter.put('/plat-update/:menuId/:platId', upload.single('imageplat'), menuCrtls.modifierPlat);
     menuRouter.delete('/plat-delete/:id', menuCrtls.supprimerPlat);
     
     

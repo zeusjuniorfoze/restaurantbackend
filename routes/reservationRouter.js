@@ -10,6 +10,7 @@ exports.router = (function(){
     //reservations route
     reservationRouter.post('/reservations-create/', reservationCrtls.creationReservation);
     reservationRouter.get('/reservations/', reservationCrtls.getReservation);
+    reservationRouter.put('/update-statut/:id', reservationCrtls.updateStatut);
 
     
     return reservationRouter

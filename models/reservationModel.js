@@ -37,7 +37,7 @@ const reservationSchema = mongoose.Schema({
       },
       statutReservation: {
         type: String,
-        default: "En cours"
+        default: "En cours.."
       },
       createdAt: {
         type: Date,
