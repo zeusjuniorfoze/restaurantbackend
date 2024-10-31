@@ -58,8 +58,7 @@ module.exports ={
     login : async (req, res) => {
 
         let {emailUser,passwordUser} = req.body;
-        console.log(emailUser)
-        console.log(passwordUser)
+     
         if( emailUser == '' || passwordUser == '' ){
             return res.status(400).json({'error': 'erreur de paramettre'})
         }
@@ -100,8 +99,7 @@ module.exports ={
         }
 
         try {
-            console.log("Entrez")
-
+           
             const User = await user.findById(idUser);
             res.status(200).json({ success: true, msg: "Utilisateur récupéré avec succès", data: User });
             
