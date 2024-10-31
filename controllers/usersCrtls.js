@@ -87,9 +87,29 @@ module.exports ={
         } catch (error) {
             res.status(500).json({ message: "Erreur lors de la connexion veillez ressayer"}); 
         }
-
        
     },
+
+    getLogin : async (req,res) => {
+
+        const headerAuth = req.headers['authorization'];
+        const idUser = jwtutils.getUserId(headerAuth); 
+    
+        if (idUser < 0) {
+            return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
+        }
+
+        try {
+            console.log("Entrez")
+
+            const User = await user.findById(idUser);
+            res.status(200).json({ success: true, msg: "Utilisateur récupéré avec succès", data: User });
+            
+        } catch (error) {
+            res.status(500).json({ message: "Erreur lors de la connexion"});
+        }
+
+    }
 
 }
 
