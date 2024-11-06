@@ -89,6 +89,86 @@ module.exports ={
        
     },
 
+    modifierUser : async (req,res) => {
+
+        const headerAuth = req.headers['authorization'];
+        const idUser = jwtutils.getUserId(headerAuth); 
+    
+        if (idUser < 0) {
+            return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
+        }
+        const { nomUser, numeroUser, emailUser } = req.body;
+        
+
+        try {
+
+        const Utilisateur = await User.findByIdAndUpdate(
+            idUser,
+            {   nomUser: nomUser,
+                numeroUser: numeroUser,
+                emailUser: emailUser
+             }, 
+            { new: true, runValidators: true } // Retourne le document mis à jour et applique les validations
+          );
+        
+          if (!Utilisateur) {
+            return { success: false, message: "Utilisateur non trouvé" };
+          }
+          return { success: true, data: Utilisateur };
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+          return { success: false, error };
+        }
+      },
+    
+    modifierMotDePasse : async (req,res) => {
+        const headerAuth = req.headers['authorization'];
+        const idUser = jwtutils.getUserId(headerAuth);
+        if (idUser < 0) {
+            return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
+        }
+        const {ancienPassword, nouveauPassword } = req.body;
+
+        try {
+            // Récupère l'utilisateur par ID
+            const existingUser = await user.findById(idUser);
+            if (!existingUser) {
+              return res.status(404).json({ error: "Utilisateur non trouvé" });
+            }
+        
+            // Vérifie l'ancien mot de passe
+            bcrypt.compare(ancienPassword, existingUser.passwordUser, async (errBycrypt, resBycrypt) => {
+              if (errBycrypt) {
+                return res.status(500).json({ error: "Erreur lors de la vérification du mot de passe" });
+              }
+              
+              if (!resBycrypt) {
+                return res.status(403).json({ error: "Mot de passe incorrect" });
+              }
+        
+              // Hash du nouveau mot de passe
+              const saltRounds = 5;
+              const hashedPassword = await bcrypt.hash(nouveauPassword, saltRounds);
+        
+              // Mise à jour du mot de passe de l'utilisateur
+              existingUser.passwordUser = hashedPassword;
+              await existingUser.save();
+        
+              // Répond avec succès et retourne éventuellement un token
+              return res.status(200).json({
+                success: true,
+                message: "Mot de passe mis à jour avec succès",
+                id: existingUser.id,
+                token: jwtutils.generateTokenForUser(existingUser) 
+              });
+            });
+          } catch (error) {
+            console.error("Erreur lors de la mise à jour du mot de passe :", error);
+            return res.status(500).json({ error: "Erreur lors de la mise à jour du mot de passe" });
+          }
+    },
+
+
     getLogin : async (req,res) => {
 
         const headerAuth = req.headers['authorization'];

@@ -68,9 +68,7 @@ module.exports = {
             const idReservation = req.params.id;
             try {
                 const {statutReservation } = req.body;
-                
-                console.log(idReservation)
-                console.log(statutReservation)
+            
                 // Vérifiez que `idReservation` et `nouveauStatut` sont fournis
                 if (!idReservation || !statutReservation) {
                     return res.status(400).json({ message: "ID de réservation et nouveau statut requis" });

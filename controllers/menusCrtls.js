@@ -126,7 +126,6 @@ module.exports = {
                 nomplat,
                 descripplat,
                 imageplat: imageUrl,
-                imagePublicId: req.file.filename,
                 prixplat
             });
             const updatedMenu = await menus.save();
