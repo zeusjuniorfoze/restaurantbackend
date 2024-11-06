@@ -12,6 +12,7 @@ exports.router = (function(){
     userRouter.post('/register/', userCrtls.register);
     userRouter.post('/login/', userCrtls.login);
     userRouter.put('/user-update/', userCrtls.modifierUser);
+    userRouter.put('/user-update-password/', userCrtls.modifierMotDePasse);
     userRouter.get('/getlogin/', userCrtls.getLogin);
 
     userRouter.post('/verify-token/', (req, res) => {

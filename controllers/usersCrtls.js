@@ -127,7 +127,7 @@ module.exports ={
         if (idUser < 0) {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
         }
-        const {ancienPassword, nouveauPassword } = req.body;
+        const {passwordUser, newPasswordUser } = req.body;
 
         try {
             // Récupère l'utilisateur par ID
@@ -137,7 +137,7 @@ module.exports ={
             }
         
             // Vérifie l'ancien mot de passe
-            bcrypt.compare(ancienPassword, existingUser.passwordUser, async (errBycrypt, resBycrypt) => {
+            bcrypt.compare(passwordUser, existingUser.passwordUser, async (errBycrypt, resBycrypt) => {
               if (errBycrypt) {
                 return res.status(500).json({ error: "Erreur lors de la vérification du mot de passe" });
               }
@@ -148,7 +148,7 @@ module.exports ={
         
               // Hash du nouveau mot de passe
               const saltRounds = 5;
-              const hashedPassword = await bcrypt.hash(nouveauPassword, saltRounds);
+              const hashedPassword = await bcrypt.hash(newPasswordUser, saltRounds);
         
               // Mise à jour du mot de passe de l'utilisateur
               existingUser.passwordUser = hashedPassword;
