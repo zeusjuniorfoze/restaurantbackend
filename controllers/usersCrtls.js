@@ -99,10 +99,10 @@ module.exports ={
         }
         const { nomUser, numeroUser, emailUser } = req.body;
         
-
+        console.log(nomUser)
         try {
 
-        const Utilisateur = await User.findByIdAndUpdate(
+        const Utilisateur = await user.findByIdAndUpdate(
             idUser,
             {   nomUser: nomUser,
                 numeroUser: numeroUser,
