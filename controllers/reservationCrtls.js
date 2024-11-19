@@ -1,7 +1,23 @@
 const reservation = require("../models/reservationModel");
 let bcrypt = require('bcrypt');
 let jwtutils = require('../utils/jwt.utils');
+const nodemailer = require('nodemailer');
 
+//Mail configuration 
+let config = {
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Utilisation de SSL
+    auth : {
+      user : 'goubexlv@gmail.com',
+      pass : 'vbuj idld qbyu ooxm'
+    },
+    tls: {
+      rejectUnauthorized: false // Permet de faire confiance aux certificats auto-signés
+    }
+  }
+  let transporter = nodemailer.createTransport(config);
+  
 
 
 module.exports = {
@@ -24,12 +40,17 @@ module.exports = {
 
     creationReservation : async (req,res) => {
 
-        
-         //const { dateReservation, heureReservation, nombrePlace, motifReservation, nomClient,numeroClient,emailClient } = req.body;
+        const { dateReservation, heureReservation, nombrePlace, motifReservation, nomClient, numeroClient, emailClient } = req.body;
+
+        const options = {
+            from: 'inforestaurant@gmail.com',
+            to: 'ngoubenejunior@gmail.com',
+            subject: "Nouvelle reservation",
+            text: "Une nouvelle reservation recus de " +nombrePlace + " place(s) pour le "+dateReservation+". Veiller allez a la plateforme pour confirmer",
+          };
 
          try {
         
-            const { dateReservation, heureReservation, nombrePlace, motifReservation, nomClient, numeroClient, emailClient } = req.body;
 
             console.log(dateReservation, heureReservation, nombrePlace, nomClient, numeroClient, emailClient)
             if (!dateReservation || !heureReservation || !nombrePlace || !nomClient || !numeroClient || !emailClient) {
@@ -48,6 +69,9 @@ module.exports = {
         
             const savedReservation = await newReservation.save();
             // Retourner une réponse réussie
+            //Envoi mail
+            await transporter.sendMail(options);
+            
             res.status(201).json({ success: true, msg: "Réservation créée avec succès", data: savedReservation });
         } catch (error) {
             console.error('Erreur lors de la création de la réservation:', error);
@@ -65,6 +89,8 @@ module.exports = {
             return res.status(400).json({ success: false, msg: "Token invalide ou manquant" });
         }
 
+        
+
             const idReservation = req.params.id;
             try {
                 const {statutReservation } = req.body;
@@ -80,13 +106,21 @@ module.exports = {
                 if (!Reservation) {
                     return res.status(404).json({ message: "Réservation non trouvée" });
                 }
+
+                const options = {
+                    from: 'inforestaurant@gmail.com',
+                    to: Reservation.emailClient,
+                    subject: "Statut de la reservation",
+                    text: "Salut Mr/mme "+ Reservation.nomClient +" \n votre reservation au restaurant powerksoft a ete " + statutReservation + " pour le "+Reservation.dateReservation+"a "+Reservation.dateReservation+" . \n merci ",
+                  };
     
                 // Mettre à jour le statut de la réservation
                 Reservation.statutReservation = statutReservation;
     
                 // Sauvegarder les modifications
                 await Reservation.save();
-    
+                //Envoi mail
+                await transporter.sendMail(options);
                 res.status(200).json({success: true,
                     message: "Statut de la réservation mis à jour avec succès",
                     Reservation,
