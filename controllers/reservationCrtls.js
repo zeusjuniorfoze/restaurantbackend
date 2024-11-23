@@ -44,7 +44,7 @@ module.exports = {
 
         const options = {
             from: 'inforestaurant@gmail.com',
-            to: 'ngoubenejunior@gmail.com',
+            to: 'powerksoft@gmail.com',
             subject: "Nouvelle reservation",
             text: "Une nouvelle reservation recus de " +nombrePlace + " place(s) pour le "+dateReservation+". Veiller allez a la plateforme pour confirmer",
           };
